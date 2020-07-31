@@ -11,12 +11,12 @@ type Task struct {
 	Func func()
 }
 
-type TaskManager struct {
+type Scheduler struct {
 	Tasks    []*Task
 	Interval time.Duration
 }
 
-func (mgr *TaskManager) Check() {
+func (mgr *Scheduler) Check() {
 	for _, task := range mgr.Tasks {
 		current := time.Now().UTC()
 		diff := current.Sub(task.LastExecution)
@@ -30,7 +30,7 @@ func (mgr *TaskManager) Check() {
 	}
 }
 
-func (mgr *TaskManager) Wait() {
+func (mgr *Scheduler) Wait() {
 	wait := make(chan bool)
 
 	go func() {
@@ -43,7 +43,7 @@ func (mgr *TaskManager) Wait() {
 	<-wait
 }
 
-func (mgr *TaskManager) Schedule(every time.Duration, fun func()) {
+func (mgr *Scheduler) Schedule(every time.Duration, fun func()) {
 	mgr.Tasks = append(mgr.Tasks, &Task{
 		Every:         every,
 		LastExecution: time.Now().UTC(),
